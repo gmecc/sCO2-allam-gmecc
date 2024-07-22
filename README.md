@@ -72,6 +72,8 @@ diagr.plot()
 ```
 ![Phase diagram](image/PT-CO2.jpg)
 
+The drawing is saved in a file.
+
 ## sCO2 thermodynamic properties
 
 ### Specific heat
