@@ -28,7 +28,7 @@ The program is based on the liquid properties library `coolProp`.
 
 # Project structure
 
-
+- `phasediagramCO2` class - an implementation of the CO2 phase diagram.
 
 # Allam cycle diagram
 
@@ -71,14 +71,14 @@ in the form of a dictionary. Key - faction name (str). Properties tuple:
 
 ### Phase diagram CO2
 
-Calculation of phase diagram $$CO_2$$.
+Calculation of phase diagram $CO_2$.
 
 ```python
 from allam import PTdiagrCO2
 diagr = PTdiagrCO2()
 diagr.plot()
 ```
-
+![Phase diagram](image/PT-CO2.jpg)
 ## Исследование рекуператора
 
 
