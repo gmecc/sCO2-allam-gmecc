@@ -1,4 +1,8 @@
 # Allam cycle calculation
+The Allam cycle, patented in 2013 by Rodney Allam, 
+uses oxy-combustion and a supercritical CO2 stream 
+as the working fluid to produce high-purity liquid pipeline CO2.
+
 The program is based on the liquid properties library `coolProp`.
 
 ## Navigation
@@ -8,7 +12,7 @@ The program is based on the liquid properties library `coolProp`.
 
 ## Allam cycle diagram
 
-![Allam cycle diagram](image/alam-sceme.jpg)
+![Allam cycle diagram](image/alam-scheme.jpg)
 
 
 
@@ -53,7 +57,7 @@ in the form of a dictionary. Key - faction name (str). Properties tuple:
 ## Исследование рекуператора
 
 
-## About the author
+## About the authors
 Sergey Besedin, dr. of sc., prof.
 
 Andry Fydorov, engineer
