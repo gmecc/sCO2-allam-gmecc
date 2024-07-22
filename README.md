@@ -5,15 +5,32 @@ as the working fluid to produce high-purity liquid pipeline CO2.
 
 The program is based on the liquid properties library `coolProp`.
 
-## Navigation
+# Navigation
+<!-- TOC -->
+* [Allam cycle calculation](#allam-cycle-calculation)
+* [Navigation](#navigation)
+* [Project structure](#project-structure)
+* [Allam cycle diagram](#allam-cycle-diagram)
+    * [Units systems](#units-systems)
+  * [List of variables](#list-of-variables)
+  * [List of methods](#list-of-methods)
+  * [Examples](#examples)
+  * [Parameters](#parameters)
+  * [Returns:](#returns)
+  * [Термодинамические свойства sCO2. Теоретическая полезная работа цикла](#термодинамические-свойства-sco2-теоретическая-полезная-работа-цикла)
+  * [Тепловая модель камеры сгорания](#тепловая-модель-камеры-сгорания)
+  * [Расчет цикла](#расчет-цикла)
+    * [Phase diagram CO2](#phase-diagram-co2)
+  * [Исследование рекуператора](#исследование-рекуператора)
+  * [About the authors](#about-the-authors)
+<!-- TOC -->
+
+
+# Project structure
 
 
 
-## Project structure
-
-
-
-## Allam cycle diagram
+# Allam cycle diagram
 
 ![Allam cycle diagram](image/allam-scheme.jpg)
 
@@ -53,6 +70,9 @@ in the form of a dictionary. Key - faction name (str). Properties tuple:
 
 
 ### Phase diagram CO2
+
+Calculation of phase diagram $$CO_2$$.
+
 ```python
 from allam import PTdiagrCO2
 diagr = PTdiagrCO2()
