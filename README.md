@@ -31,6 +31,7 @@ The program is based on the liquid properties library `coolProp`.
 # Project structure
 
 - `phasediagramCO2` class - an implementation of the CO2 phase diagram.
+- `property-sCO2-cp` class - an implementation of the sCO2 properties.
 
 # Allam cycle diagram
 
