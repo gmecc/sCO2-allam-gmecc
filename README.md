@@ -61,9 +61,9 @@ in the form of a dictionary. Key - faction name (str). Properties tuple:
 
 # Examples
 
-## Phase diagram CO2
+## CO2 phase diagram 
 
-Calculation of phase diagram $CO_2$.
+Calculation of $CO_2$ phase diagram.
 
 ```python
 from allam import PTdiagrCO2
@@ -72,16 +72,19 @@ diagr.plot()
 ```
 ![Phase diagram](image/PT-CO2.jpg)
 
-## Thermodynamic properties sCO2. 
+## sCO2 thermodynamic properties. 
 
 ### Specific heat
 
-Dependence of specific isobaric heat capacity on pressure 
+Dependence of specific isobaric heat capacity $sCO_2$ on pressure 
 at different temperatures.
+
+- `pressure` *(tuple)* - minimum and maximum absolute pressure *[Pa]*: 
+- `temperature` *(tuple)* - temperature *[\u2103]*
 
 ```python
 from allam import PropSCO2
-temperature = [32, 40, 50, 60, 600]
+temperature = (32, 40, 50, 60, 600)
 ts = PropSCO2()
 ts.diagramm_pressure(pressure=(1e6, 20e6), temperature=temperature)
 ```
