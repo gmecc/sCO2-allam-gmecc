@@ -86,7 +86,7 @@ ts = PropSCO2()
 ts.diagramm_pressure(pressure=(1e6, 20e6), temperature=temperature)
 ```
 
-![specific_heat_pressure](image/specific_heat_pressure.jpg)
+![specific_heat_pressure](image/specific_heat_pressure.png)
 
 
 ## Теоретическая полезная работа цикла
