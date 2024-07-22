@@ -46,7 +46,6 @@ The program is based on the liquid properties library `coolProp`.
 
 ## List of methods
 
-## Examples
 
 
 ## Parameters
@@ -60,16 +59,9 @@ in the form of a dictionary. Key - faction name (str). Properties tuple:
 
 
 
-## Термодинамические свойства sCO2. Теоретическая полезная работа цикла
+# Examples
 
-
-## Тепловая модель камеры сгорания
-
-
-## Расчет цикла
-
-
-### Phase diagram CO2
+## Phase diagram $CO_2$
 
 Calculation of phase diagram $CO_2$.
 
@@ -79,6 +71,22 @@ diagr = PTdiagrCO2()
 diagr.plot()
 ```
 ![Phase diagram](image/PT-CO2.jpg)
+
+## Термодинамические свойства $sCO_2$. 
+
+
+
+## Теоретическая полезная работа цикла
+
+
+## Тепловая модель камеры сгорания
+
+
+## Расчет цикла
+
+
+
+
 ## Исследование рекуператора
 
 
