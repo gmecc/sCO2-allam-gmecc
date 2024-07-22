@@ -80,7 +80,7 @@ Dependence of specific isobaric heat capacity $sCO_2$ on pressure
 at different temperatures.
 
 - `pressure` *(tuple)* - minimum and maximum absolute pressure *[Pa]*: 
-- `temperature` *(tuple)* - temperature *[&2103]*
+- `temperature` *(tuple)* - temperature *[°C]*
 
 ```python
 from allam import PropSCO2
