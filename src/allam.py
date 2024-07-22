@@ -19,7 +19,7 @@ import pandas as pd
 from scipy import constants as cst
 import matplotlib.pyplot as plt
 from CoolProp.CoolProp import PropsSI, PhaseSI
-from combustion import Combust
+from .combustion import Combust
 from scipy.optimize import root
 import sys
 

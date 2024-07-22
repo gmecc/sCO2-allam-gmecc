@@ -7,17 +7,18 @@ The program is based on the liquid properties library `coolProp`.
 
 ## Navigation
 
+
+
 ## Project structure
+
 
 
 ## Allam cycle diagram
 
 ![Allam cycle diagram](image/allam-scheme.jpg)
 
-
-
 ### Units systems
-- temperature - degree Celsius _[°C]_;
+- temperature - Kelvins _[K]_;
 - absolute pressure _[Pa]_
 
 ## List of variables
@@ -51,8 +52,12 @@ in the form of a dictionary. Key - faction name (str). Properties tuple:
 ## Расчет цикла
 
 
-### Фазовая диаграмма
-
+### Phase diagram CO2
+```python
+from allam import PTdiagrCO2
+diagr = PTdiagrCO2()
+diagr.plot()
+```
 
 ## Исследование рекуператора
 
