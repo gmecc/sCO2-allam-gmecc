@@ -61,7 +61,7 @@ in the form of a dictionary. Key - faction name (str). Properties tuple:
 
 # Examples
 
-## Phase diagram $CO_2$
+## Phase diagram CO2
 
 Calculation of phase diagram $CO_2$.
 
@@ -72,9 +72,22 @@ diagr.plot()
 ```
 ![Phase diagram](image/PT-CO2.jpg)
 
-## Термодинамические свойства $sCO_2$. 
+## Thermodynamic properties sCO2. 
 
-$$E=mc^2$$
+### Specific heat
+
+Dependence of specific isobaric heat capacity on pressure 
+at different temperatures.
+
+```python
+from allam import PropSCO2
+temperature = [32, 40, 50, 60, 600]
+ts = PropSCO2()
+ts.diagramm_pressure(pressure=(1e6, 20e6), temperature=temperature)
+```
+
+![specific_heat_pressure](image/specific_heat_pressure.jpg)
+
 
 ## Теоретическая полезная работа цикла
 
