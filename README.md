@@ -12,7 +12,7 @@ The program is based on the liquid properties library `coolProp`.
 
 ## Allam cycle diagram
 
-![Allam cycle diagram](image/alam-scheme.jpg)
+![Allam cycle diagram](image/allam-scheme.jpg)
 
 
 
