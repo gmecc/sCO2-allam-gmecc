@@ -59,7 +59,7 @@ class Combust:
         self.g = pd.Series([np.nan], index=['gas_vol'])
         
         
-        # РАСЧЕТ СОСТАВА ПРОДУКТОВ СГОРАНИЯ
+    # РАСЧЕТ СОСТАВА ПРОДУКТОВ СГОРАНИЯ
     def _massFraction(self, k_recyc):         
         self.k_recyc = k_recyc
         
@@ -102,7 +102,7 @@ class Combust:
         
         
 
-        # ФУНКЦИЯ РАСЧЕТА ТЕМПЕРАТУРЫ ГОРЕНИЯ 
+    # ФУНКЦИЯ РАСЧЕТА ТЕМПЕРАТУРЫ ГОРЕНИЯ
     def _tempFunc(self, temp):
         
         sph_CO2 = self.spHv_CO2_pol(temp) 
@@ -154,7 +154,7 @@ class Combust:
         plt.plot(ki, ti, color='red')
         plt.minorticks_on()
         plt.xlabel('k_recyc') 
-        plt.ylabel('T,K') 
+        plt.ylabel('Temperature [K]')
         plt.grid(linestyle='--', linewidth=0.5, color='black') # сетка
         plt.tight_layout() # оптимизируем поля и расположение объектов
         plt.savefig('temp-k_recyc.jpg', dpi = 300)

@@ -147,7 +147,35 @@ temp = comb._burnTemp(k_recyc=20, temp_recyc=900)
 print(f'Calorimetric combustion temperature {temp:.1f} °C')
 ```
 
+### Calculation of recirculation coefficient
 
+- `temp_gas` - gas temperature at the outlet of the combustion chamber *[°C]*.
+- `temp_recyc` - recirculation gas temperature *[°C]*.
+
+```python
+from allam import Combust
+comb = Combust()
+k_recyc = comb.burnAlpha(temp_gas=1000, temp_recyc=580)
+print(f'Recirculation coefficient {k_recyc:.2f}')
+```
+
+### Inlet gas composition
+
+```python
+comb.gas_in
+```
+
+### Outlet gas composition
+
+```python
+comb.gas
+```
+
+### Temperature dependence on recirculation coefficient
+
+```python
+comb.tempAlphaPl(k_recyc=(5, 25), temp_recyc=580)
+```
 
 ## Расчет цикла
 
