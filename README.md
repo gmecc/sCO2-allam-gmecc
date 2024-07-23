@@ -98,6 +98,29 @@ ts.diagramm_pressure(pressure=(1e6, 20e6), temperature=temperature)
 
 The drawing is saved in a file.
 
+Dependence of specific isobaric heat capacity on pressure at different temperatures.
+
+```python
+from allam import PropSCO2
+ts = PropSCO2()
+ts.diagramm_temperature(pressure=(7.4e6, 10e6, 15e6, 20e6), temperature=(20, 200))
+```
+![specific_heat_temperature](image/specific_heat_temperature.png)
+
+The drawing is saved in a file.
+
+### Compressibility
+
+```python
+from allam import PropSCO2
+ts = PropSCO2()
+ts.compressibility(pressure=(5e6, 10e6), temperature=(32, 40, 60, 100, 300, 500))
+```
+
+![compressibility](image/compressibility.png)
+
+
+
 ## Теоретическая полезная работа цикла
 
 
