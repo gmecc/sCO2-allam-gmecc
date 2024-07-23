@@ -11,3 +11,6 @@ ts.diagramm_temperature(pressure=(7.4e6, 10e6, 15e6, 20e6), temperature=(20, 200
 
 # Compressibility
 ts.compressibility(pressure=(5e6, 10e6), temperature=(32, 40, 60, 100, 300, 500))
+
+# Theoretical useful work of the cycle
+ts.work(pressure=(5e6, 10e6), pressure_rate=2., temperature=(32, 600))

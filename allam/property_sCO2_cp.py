@@ -123,8 +123,8 @@ class PropSCO2:
         
         
         plt.minorticks_on()
-        plt.xlabel('Давление, MPa', fontsize=10) 
-        plt.ylabel('Работа, кДж/кг', fontsize=10) 
+        plt.xlabel('Pressure, MPa', fontsize=10)
+        plt.ylabel('Work, кДж/кг', fontsize=10)
         # plt.ylim([0, 200])
         plt.grid(linestyle='--', linewidth=0.5, color='black') # сетка
         title = '$\pi_k$ = ' + str(pressure_rate)
@@ -152,8 +152,8 @@ class PropSCO2:
                    label= '$P_{crit}$') # вертикальная линия
 
         plt.minorticks_on()
-        plt.xlabel('Давление, MPa', fontsize=10) 
-        plt.ylabel('Сжимаемость', fontsize=10) 
+        plt.xlabel('Pressure, MPa', fontsize=10)
+        plt.ylabel('Compressibility', fontsize=10)
         plt.grid(linestyle='--', linewidth=0.5, color='black') # сетка
         plt.legend()
         plt.tight_layout() # оптимизируем поля и расположение объектов
@@ -165,18 +165,6 @@ class PropSCO2:
 
 
         
-        
-        
-        
-    # def recuperator(self, temperature, pressure):
 
-# ts = PropSCO2()
-# ts.compressibility(pressure=(5e6, 10e6), temperature=(32, 40, 60, 100, 300, 500))
-
-# ts.work(pressure=(5e6, 10e6), pressure_rate=2.5, temperature=(32, 600))
-
-# temperature = [32, 40, 50, 60, 600]
-# ts.diagramm_pressure(pressure=(1e6, 20e6), temperature=temperature)
-# ts.diagramm_temperature(pressure=[7.4e6, 15e6], temperature=(32, 300))
 
 

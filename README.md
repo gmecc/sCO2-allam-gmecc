@@ -35,7 +35,7 @@ The program is based on the liquid properties library `coolProp`.
 
 # Allam cycle diagram
 
-![Allam cycle diagram](image/allam-scheme.jpg)
+![Allam cycle diagram](images/allam-scheme.jpg)
 
 ### Units systems
 - temperature - Kelvins _[K]_;
@@ -73,7 +73,7 @@ from allam import PTdiagrCO2
 diagr = PTdiagrCO2()
 diagr.plot()
 ```
-![Phase diagram](image/PT-CO2.jpg)
+![Phase diagram](images/PT-CO2.jpg)
 
 The drawing is saved in a file.
 
@@ -94,7 +94,7 @@ ts = PropSCO2()
 ts.diagramm_pressure(pressure=(1e6, 20e6), temperature=temperature)
 ```
 
-![specific_heat_pressure](image/specific_heat_pressure.png)
+![specific_heat_pressure](images/specific_heat_pressure.png)
 
 The drawing is saved in a file.
 
@@ -105,7 +105,8 @@ from allam import PropSCO2
 ts = PropSCO2()
 ts.diagramm_temperature(pressure=(7.4e6, 10e6, 15e6, 20e6), temperature=(20, 200))
 ```
-![specific_heat_temperature](image/specific_heat_temperature.png)
+
+![specific_heat_temperature](images/specific_heat_temperature.png)
 
 The drawing is saved in a file.
 
@@ -117,11 +118,20 @@ ts = PropSCO2()
 ts.compressibility(pressure=(5e6, 10e6), temperature=(32, 40, 60, 100, 300, 500))
 ```
 
-![compressibility](image/compressibility.png)
+![compressibility](images/compressibility.png)
 
 
 
-## Теоретическая полезная работа цикла
+### Theoretical useful work of the cycle
+
+```python
+from allam import PropSCO2
+ts = PropSCO2()
+ts.work(pressure=(5e6, 10e6), pressure_rate=2., temperature=(32, 600))
+```
+
+![work](images/work.png)
+
 
 
 ## Тепловая модель камеры сгорания
