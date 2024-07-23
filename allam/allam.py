@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from CoolProp.CoolProp import PropsSI
-from allam.allam import Combust
+from allam import Combust
 from scipy.optimize import root
 
 pd.set_option('display.float_format', '{:.2f}'.format)
@@ -52,26 +52,13 @@ class Acycle:
             return resedual
         sol = root(func_resedual, 1000, args=(enthalpy))
         return sol.x[0]
-    
-    
-    # def _temp_cool_out(self):
-    #     h = self.p.dh[2] / self.comb.gas.mass['CO2_recyc'] - self.p.enth[6]
-    #     f = lambda temperature: PropsSI('H','T',temperature,'P',self.p.pres[5],self.fluid_mix)
-        
-    #     def func_resedual(x, param):
-    #         resedual = f(x) - param
-    #         return resedual
-    #     sol = root(func_resedual, 1000, args=(h))
-    #     return sol.x[0]
-        
-        
-        
+
         # РАСЧЕТ ПАРАМЕТРОВ РТ В ТОЧКАХ ЦИКЛА
     def cycle(self, pressure_min, pressure_rate, temperature, pinch_point=5):
         
         self.pressure_min = pressure_min # давление перед компрессором
         self.pressure_rate = pressure_rate # повышение давления в компрессоре
-        self.p.temp.iloc[5] = temperature[0] # температура перед компрессором
+        self.p.loc[5, 'temp'] = temperature[0] # температура перед компрессором
         self.p.temp.iloc[0] = temperature[1] # температура перед турбиной
         self.p.temp.iloc[7] = temperature[2] # температура СО2 перед камерой сгорания
         self.pinch_point = pinch_point # пинч-поинт
@@ -402,36 +389,6 @@ temperature[0] # температура перед компрессором [K]
 temperature[1] # температура перед камерой сгорания [K]
 temperature[2] # температура перед турбиной [K]
 '''
-
-
-# sco = Acycle()
-# sco.cycle(pressure_min=8e6, pressure_rate=2.2, temperature=(310,1000, 760))
-
-# print(sco.p)
-# print(sco.g)
-# print(f'{sco.g.efc_cycle = :.3f}')
-
-
-
-
-
-
-# sco.ts_diagramm()
-
-# # sco.optim(pressure=64., temperature=((32,500), (32, 500), (32, 600)), pressure_rate=(1.2,3.5))
-
-# sco.power()
-# sco.n_optim_power()
-
-######################################
-# print(self.p)
-# print(self.g)
-
-
-# print("*** program OK ***")
-# sys.exit("*** STOP ***")
-######################################
-
 
 
 
