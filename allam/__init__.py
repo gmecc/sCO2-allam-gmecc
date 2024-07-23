@@ -9,6 +9,6 @@ from .combustion import *
 from .phasediagrCO2 import *
 from .spHvol import *
 from .property_sCO2_cp import *
-# from .allam import *
+from .allam import *
 # from .recuperator import *
 

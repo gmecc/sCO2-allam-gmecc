@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from CoolProp.CoolProp import PropsSI
-from allam.combustion import Combust
+from allam.allam import Combust
 from scipy.optimize import root
 
 pd.set_option('display.float_format', '{:.2f}'.format)
