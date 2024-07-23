@@ -20,11 +20,11 @@ import numpy as np
 from CoolProp.CoolProp import PropsSI
 from scipy.optimize import root
 import matplotlib.pyplot as plt
-import spHvol
 from scipy import constants as cst
 
 pd.set_option('display.float_format', '{:.4f}'.format)
 pd.set_option('display.max_columns', None)
+pd.options.mode.chained_assignment = None  # default='warn'
 
 class Combust:
     def __init__(self):
@@ -37,20 +37,24 @@ class Combust:
         self.gas = pd.DataFrame(columns=['mol_mass', 'mol', 'mass'], 
                               index=['CO2', 'H2O', 'CO2_recyc'], dtype=float)
         
-        self.gas.mol_mass.iloc[0] = PropsSI('molarmass','CO2')
-        self.gas.mol_mass.iloc[2] = PropsSI('molarmass','CO2')
-        self.gas.mol_mass.iloc[1] = PropsSI('molarmass','H2O')
+        self.gas.loc['mol_mass', 'CO2'] = PropsSI('molarmass','CO2')
+        self.gas.loc['mol_mass', 'CO2'] = PropsSI('molarmass','CO2')
+        self.gas.loc['mol_mass', 'H2O'] = PropsSI('molarmass','H2O')
         
         self.gas_in = pd.DataFrame(columns=['mol_mass', 'mol', 'mass'],
                 index=['CH4', 'O2', 'CO2'], dtype=float)
         
-        self.gas_in.mol_mass.iloc[0] = PropsSI('molarmass','CH4')
-        self.gas_in.mol_mass.iloc[1] = PropsSI('molarmass','O2')
-        self.gas_in.mol_mass.iloc[2] = PropsSI('molarmass','CO2')
-        
-        self.spHv_CO2_pol = np.polynomial.Polynomial(spHvol.spHvol_CO2_coef)
-        self.spHv_H2O_pol = np.polynomial.Polynomial(spHvol.spHvol_H2O_coef)
-        self.spHv_O2_pol = np.polynomial.Polynomial(spHvol.spHvol_O2_coef)
+        self.gas_in.loc['mol_mass', 'CH4'] = PropsSI('molarmass','CH4')
+        self.gas_in.loc['mol_mass', 'O2'] = PropsSI('molarmass','O2')
+        self.gas_in.loc['mol_mass', 'CO2'] = PropsSI('molarmass','CO2')
+
+        spHvol_CO2_coef = [1.63479959e+03, 9.75263813e-01, -5.45793612e-04, 1.83324681e-07, -2.67917924e-11]
+        spHvol_H2O_coef = [1.49735370e+03, 1.18320983e-01, 1.79154428e-04, -8.92543875e-08, 1.34614261e-11]
+        spHvol_O2_coef = [1.30543577e+03, 1.74761949e-01, 6.42329236e-05, -8.82987243e-08, 2.28704857e-11]
+
+        self.spHv_CO2_pol = np.polynomial.Polynomial(spHvol_CO2_coef)
+        self.spHv_H2O_pol = np.polynomial.Polynomial(spHvol_H2O_coef)
+        self.spHv_O2_pol = np.polynomial.Polynomial(spHvol_O2_coef)
         
         self.g = pd.Series([np.nan], index=['gas_vol'])
         

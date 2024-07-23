@@ -84,7 +84,7 @@ The drawing is saved in a file.
 Dependence of specific isobaric heat capacity $sCO_2$ on pressure 
 at different temperatures.
 
-- `pressure` *(tuple)* - minimum and maximum absolute pressure *[Pa]*: 
+- `pressure` *(tuple)* - minimum and maximum absolute pressure *[Pa]*
 - `temperature` *(tuple)* - temperature *[°C]*
 
 ```python
@@ -132,18 +132,19 @@ ts.work(pressure=(5e6, 10e6), pressure_rate=2., temperature=(32, 600))
 
 ![work](images/work.png)
 
-
-
 ## Thermal model of the combustion chamber
 
-### Calorimetric temperature and gas composition calculation
+### Calorimetric combustion temperature and gas composition calculation
+
+- `pressure` *(tuple)* - minimum and maximum absolute pressure *[Pa]*.
+- `k_recyc` - recirculation ratio (dimensionless).
+- `temp_recyc` - recirculation gas temperature *[°C]*.
 
 ```python
-from combustion import Combust
-from scipy import constants as cst
-from pyfluids import FluidsList
-
-
+from allam import Combust
+comb = Combust()
+temp = comb._burnTemp(k_recyc=20, temp_recyc=900)
+print(f'Calorimetric combustion temperature {temp:.1f} °C')
 ```
 
 
