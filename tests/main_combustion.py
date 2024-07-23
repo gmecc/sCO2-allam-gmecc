@@ -8,8 +8,8 @@ print(f'Calorimetric combustion temperature {temp:.1f} °C')
 # Calculation of recirculation coefficient
 k_recyc = comb.burnAlpha(temp_gas=1000, temp_recyc=580)
 print(f'Recirculation coefficient {k_recyc:.2f}')
-
 print(comb.gas)
+print(comb.g)
 print(comb.gas_in)
 
 comb.tempAlphaPl(k_recyc=(5, 25), temp_recyc=580)

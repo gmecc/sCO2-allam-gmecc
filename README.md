@@ -183,6 +183,8 @@ comb.gas
 comb.tempAlphaPl(k_recyc=(5, 25), temp_recyc=580)
 ```
 
+![temp-k_recyc](images/temp-k_recyc.jpg)
+
 ## Расчет цикла
 
 

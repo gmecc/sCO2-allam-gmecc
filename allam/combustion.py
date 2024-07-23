@@ -37,16 +37,16 @@ class Combust:
         self.gas = pd.DataFrame(columns=['mol_mass', 'mol', 'mass'], 
                               index=['CO2', 'H2O', 'CO2_recyc'], dtype=float)
         
-        self.gas.loc['mol_mass', 'CO2'] = PropsSI('molarmass','CO2')
-        self.gas.loc['mol_mass', 'CO2'] = PropsSI('molarmass','CO2')
-        self.gas.loc['mol_mass', 'H2O'] = PropsSI('molarmass','H2O')
+        self.gas.loc['CO2', 'mol_mass'] = PropsSI('molarmass','CO2')
+        self.gas.loc['CO2_recyc', 'mol_mass'] = PropsSI('molarmass','CO2')
+        self.gas.loc['H2O', 'mol_mass'] = PropsSI('molarmass','H2O')
         
         self.gas_in = pd.DataFrame(columns=['mol_mass', 'mol', 'mass'],
                 index=['CH4', 'O2', 'CO2'], dtype=float)
         
-        self.gas_in.loc['mol_mass', 'CH4'] = PropsSI('molarmass','CH4')
-        self.gas_in.loc['mol_mass', 'O2'] = PropsSI('molarmass','O2')
-        self.gas_in.loc['mol_mass', 'CO2'] = PropsSI('molarmass','CO2')
+        self.gas_in.loc['CH4', 'mol_mass'] = PropsSI('molarmass','CH4')
+        self.gas_in.loc['O2', 'mol_mass'] = PropsSI('molarmass','O2')
+        self.gas_in.loc['CO2', 'mol_mass'] = PropsSI('molarmass','CO2')
 
         spHvol_CO2_coef = [1.63479959e+03, 9.75263813e-01, -5.45793612e-04, 1.83324681e-07, -2.67917924e-11]
         spHvol_H2O_coef = [1.49735370e+03, 1.18320983e-01, 1.79154428e-04, -8.92543875e-08, 1.34614261e-11]
@@ -79,15 +79,17 @@ class Combust:
         
         # Объем продуктов сгорания
         self.g['gas_vol'] = self.volume_gas
-        
+
         # Состав продуктов сгорания - мольные доли
         self.gas.mol.at['CO2'] = self.volume_CO2 / self.g.gas_vol
         self.gas.mol.at['CO2_recyc'] = self.volume_CO2_recyc / self.g.gas_vol
         self.gas.mol.at['H2O'] = self.volume_H2O / self.g.gas_vol
         self.g['mol_mass'] = (self.gas.mol_mass[0:2] * self.gas.mol[0:2]).sum()
-        
+
+
+
         # Массовые доли продуктов сгорания
-        self.gas.mass = (self.gas.mol * self.gas.mol_mass / self.g.mol_mass).round(4)
+        self.gas.loc[:,'mass'] = (self.gas.mol * self.gas.mol_mass / self.g.mol_mass).round(4)
         self.g['gas_mass_sum'] = self.gas.mass.sum()
         
         # Мольные доли газа на входе
