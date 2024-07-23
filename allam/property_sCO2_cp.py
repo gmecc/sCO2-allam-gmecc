@@ -37,7 +37,7 @@ class PropSCO2:
         
         plt.minorticks_on()
         plt.xlabel('Pressure, MPa', fontsize=10) 
-        plt.ylabel('$C_p$, кДж/(кг.К)]', fontsize=10) 
+        plt.ylabel('$C_p$, kJ/(kg.К)]', fontsize=10)
         plt.grid(linestyle='--', linewidth=0.5, color='black') # сетка
         # plt.title('title', loc='left', fontsize=10)
         plt.legend()
@@ -61,11 +61,11 @@ class PropSCO2:
         
         for i in range(len(self.pressure)):
             plt.plot(self.temperature, self.specific_heat(self.temperature, self.pressure[i]), 
-                     label= str(self.pressure[i]/1e6)+' МПа')
+                     label= str(self.pressure[i]/1e6)+' МPа')
         
         plt.minorticks_on()
         plt.xlabel('Temperature, MPa', fontsize=10) 
-        plt.ylabel('$C_p$, кДж/(кг.К)]', fontsize=10) 
+        plt.ylabel('$C_p$, kJ/(kg.К)]', fontsize=10)
         plt.grid(linestyle='--', linewidth=0.5, color='black') # сетка
         # plt.title('title', loc='left', fontsize=10)
         plt.legend()
@@ -124,7 +124,7 @@ class PropSCO2:
         
         plt.minorticks_on()
         plt.xlabel('Pressure, MPa', fontsize=10)
-        plt.ylabel('Work, кДж/кг', fontsize=10)
+        plt.ylabel('Work, kJ/kg', fontsize=10)
         # plt.ylim([0, 200])
         plt.grid(linestyle='--', linewidth=0.5, color='black') # сетка
         title = '$\pi_k$ = ' + str(pressure_rate)
