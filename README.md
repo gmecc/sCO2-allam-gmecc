@@ -134,7 +134,18 @@ ts.work(pressure=(5e6, 10e6), pressure_rate=2., temperature=(32, 600))
 
 
 
-## Тепловая модель камеры сгорания
+## Thermal model of the combustion chamber
+
+### Calorimetric temperature and gas composition calculation
+
+```python
+from combustion import Combust
+from scipy import constants as cst
+from pyfluids import FluidsList
+
+
+```
+
 
 
 ## Расчет цикла

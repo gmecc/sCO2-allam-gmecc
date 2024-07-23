@@ -17,12 +17,9 @@ Created on Sun Jan  7 10:38:03 2024
 
 import pandas as pd
 import numpy as np
-import sys
 from CoolProp.CoolProp import PropsSI
-from scipy import constants as cst
 from scipy.optimize import root
 import matplotlib.pyplot as plt
-from scipy.optimize import fsolve
 import spHvol
 from scipy import constants as cst
 
@@ -160,20 +157,6 @@ class Combust:
         plt.show()
 
 
-
-# comb = Combust()
-# comb._massFraction(k_recyc=1)
-# temp = comb._burnTemp(k_recyc=4, temp_recyc=200)
-# print(temp)
-# print(temp)
-
-# k_recyc = comb.burnAlpha(temp_gas=800, temp_recyc=500)
-# print(comb.gas)
-# print(k_recyc)
-
-# comb.tempAlphaPl(k_recyc=(5, 15), temp_recyc=200, pressure=cst.atm*50)
-# enthalpy = comb.entalpy()
-# print(enthalpy)
 
 
 

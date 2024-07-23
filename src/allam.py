@@ -16,12 +16,10 @@
 
 import numpy as np
 import pandas as pd
-from scipy import constants as cst
 import matplotlib.pyplot as plt
-from CoolProp.CoolProp import PropsSI, PhaseSI
-from .combustion import Combust
+from CoolProp.CoolProp import PropsSI
+from allam.combustion import Combust
 from scipy.optimize import root
-import sys
 
 pd.set_option('display.float_format', '{:.2f}'.format)
 # pd.set_option('display.max_columns', None)
