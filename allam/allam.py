@@ -226,6 +226,7 @@ class Acycle:
         plt.ylabel('efc') 
         plt.xlabel('Temperature [K]') 
         plt.grid(linestyle='--', linewidth=0.5, color='black') # сетка
+        plt.savefig('efc_temp_recyc.jpg', dpi=300)
         plt.show()
         
         
@@ -270,6 +271,7 @@ class Acycle:
         plt.ylabel('efc') 
         plt.xlabel('Temperature [K]') 
         plt.grid(linestyle='--', linewidth=0.5, color='black') # сетка
+        plt.savefig('efc_temp_heat.jpg', dpi=300)
         plt.show()
         
         

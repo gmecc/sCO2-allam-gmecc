@@ -227,6 +227,15 @@ diagr.plot()
 
 ![Phase diagram of the working fluid](images/PTmix.jpg)
 
+### Dependence of efficiency on recirculated gas temperature
+
+```python
+sco.efc_temp_heat((700,1000), pressure_min=8e6, pressure_rate=2.2, temperature=(310,500))
+```
+
+![efc_temp_recyc](images/efc_temp_recyc.jpg)
+
+
 
 ### Изменение плотности в цикле
 
@@ -236,7 +245,6 @@ diagr.plot()
 
 ### Зависимость КПД от температуры рециркулируемого газа
 
-### Зависимость КПД от температуры нагревателя
 
 ### Зависимость pinch от температуры рециркулируемого газа
 
