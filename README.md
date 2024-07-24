@@ -214,10 +214,17 @@ print(sco.p)
 print(sco.g)
 ```
 
+Data is saved in `csv` files.
+
 ### Phase diagram of the working fluid
 
+```python
+from allam import PTdiagrmix
+diagr = PTdiagrmix()
+diagr.plot()
+```
 
-
+![Phase diagram of the working fluid](images/PTmix.jpg)
 
 
 ### Изменение плотности в цикле

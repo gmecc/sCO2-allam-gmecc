@@ -27,8 +27,6 @@ class PTdiagrmix:
         Tmin1 = carbondioxid.keyed_output(CP.iT_min)
         Tmax1 = Tc1 * 2
         
-        fig = plt.figure(figsize = (5,5))
-        
         # Saturation curve
         Ts1 = np.linspace(Tmin1, Tc1)
         ps1 = CP.CoolProp.PropsSI('P','T',Ts1,'Q',0,'CO2')
@@ -67,9 +65,6 @@ class PTdiagrmix:
         plt.plot(x[:3], y[:3], color='red', label='mix', lw=1) # точка
         
         c = [300, 1000]
-        # plt.fill_between(x, y1, y2)
-        # plt.fill_between([x, y], 8e6, 18e6, color='purple', alpha= .2, label='cycle')
-        # plt.plot(cycle_T, cycle_P, color="red", lw=2, label='cycle', linestyle='--')
         plt.ylim(1e6,1e8)
         plt.gca().set_yscale('log')
         plt.gca().set_xlim(220, 1100)
@@ -85,5 +80,3 @@ class PTdiagrmix:
         
         
         
-# diagr = PTdiagrmix()
-# diagr.plot()
