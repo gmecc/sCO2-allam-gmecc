@@ -28,9 +28,9 @@ class Acycle:
     def __init__(self):
         self.p = pd.DataFrame(columns=['CO2', 'H2O', 'temp', 'dt', 'pres', 'dp_rel',
                 'dens', 'entr', 'enth', 'dh', 'sp_heat', 'efc', 'phase'], index=range(8))
-        self.p.dp_rel[:] = (.98, np.nan, .95, .99, 1., .95, np.nan, .95) # относительные потери давления
-        self.p.efc[:] = (.99,  .9, .85, 1., 1., 1., .86, .85) # КПД
-        self.p.dt[:] = (.0, .0, 5., .0, .0, .0, .0, 5.) # температурный напор [град]
+        self.p.loc[:, 'dp_rel'] = [.98, np.nan, .95, .99, 1., .95, np.nan, .95] # относительные потери давления
+        self.p.loc[:, 'efc'] = (.99,  .9, .85, 1., 1., 1., .86, .85) # КПД
+        self.p.loc[:, 'dt'] = (.0, .0, 5., .0, .0, .0, .0, 5.) # температурный напор [град]
         self.g = pd.Series([np.nan], index=['k_recyc'])
 
 
@@ -59,20 +59,20 @@ class Acycle:
         self.pressure_min = pressure_min # давление перед компрессором
         self.pressure_rate = pressure_rate # повышение давления в компрессоре
         self.p.loc[5, 'temp'] = temperature[0] # температура перед компрессором
-        self.p.temp.iloc[0] = temperature[1] # температура перед турбиной
-        self.p.temp.iloc[7] = temperature[2] # температура СО2 перед камерой сгорания
+        self.p.loc[0, 'temp'] = temperature[1] # температура перед турбиной
+        self.p.loc[7, 'temp'] = temperature[2] # температура СО2 перед камерой сгорания
         self.pinch_point = pinch_point # пинч-поинт
         
 
         # давление в контуре
-        self.p.pres.iloc[5] = self.pressure_min 
-        self.p.pres.iloc[6] = self.p.pres[5] * self.pressure_rate
-        self.p.pres.iloc[7] = self.p.pres[6] * self.p.dp_rel[7]
-        self.p.pres.iloc[0] = self.p.pres[7] * self.p.dp_rel[0]
-        self.p.pres.iloc[4] = self.p.pres[5] / self.p.dp_rel[5] 
-        self.p.pres.iloc[3] = self.p.pres[4] / self.p.dp_rel[4]
-        self.p.pres.iloc[2] = self.p.pres[3] / self.p.dp_rel[3]  
-        self.p.pres.iloc[1] = self.p.pres[2] / self.p.dp_rel[2]
+        self.p.loc[5, 'pres'] = self.pressure_min
+        self.p.loc[6, 'pres'] = self.p.pres[5] * self.pressure_rate
+        self.p.loc[7, 'pres'] = self.p.pres[6] * self.p.dp_rel[7]
+        self.p.loc[0, 'pres'] = self.p.pres[7] * self.p.dp_rel[0]
+        self.p.loc[4, 'pres'] = self.p.pres[5] / self.p.dp_rel[5]
+        self.p.loc[3, 'pres'] = self.p.pres[4] / self.p.dp_rel[4]
+        self.p.loc[2, 'pres'] = self.p.pres[3] / self.p.dp_rel[3]
+        self.p.loc[1, 'pres'] = self.p.pres[2] / self.p.dp_rel[2]
         
         # фракционный состав рабочего тела
         self.comb = Combust()
@@ -86,128 +86,114 @@ class Acycle:
         
         self.fluid_mix = 'CO2[' + str(molCO2) + ']&water[' + str(molH2O) + ']'
         
-        self.p.CO2.iloc[0:3] = molCO2
-        self.p.H2O.iloc[0:3] = 1 - molCO2
+        self.p.loc[0:3, 'CO2'] = molCO2
+        self.p.loc[0:3, 'H2O'] = 1 - molCO2
         
-        self.p.CO2.iloc[3:8] = 1
-        self.p.H2O.iloc[3:8] = 0
+        self.p.loc[3:8, 'CO2'] = 1
+        self.p.loc[3:8, 'H2O'] = 0
         
         
         # точка 5 - перед компрессором [CO2]
-        self.p.enth.iloc[5] = PropsSI('H','T',self.p.temp[5],'P',self.p.pres[5],'CO2') 
-        self.p.entr.iloc[5] = PropsSI('S','T',self.p.temp[5],'P',self.p.pres[5],'CO2')
-        self.p.dens.iloc[5] = PropsSI('D','T',self.p.temp[5],'P',self.p.pres[5],'CO2')
-        self.p.sp_heat.iloc[5] = PropsSI('C','T',self.p.temp[5],'P',self.p.pres[5],'CO2')
-        self.p.phase.iloc[5] = PropsSI('Phase','T',self.p.temp[5],'P',self.p.pres[5],'CO2')
+        self.p.loc[5, 'enth'] = PropsSI('H','T',self.p.temp[5],'P',self.p.pres[5],'CO2')
+        self.p.loc[5, 'entr'] = PropsSI('S','T',self.p.temp[5],'P',self.p.pres[5],'CO2')
+        self.p.loc[5, 'dens'] = PropsSI('D','T',self.p.temp[5],'P',self.p.pres[5],'CO2')
+        self.p.loc[5, 'sp_heat'] = PropsSI('C','T',self.p.temp[5],'P',self.p.pres[5],'CO2')
+        self.p.loc[5, 'phase'] = PropsSI('Phase','T',self.p.temp[5],'P',self.p.pres[5],'CO2')
         
         # точка 6 - за компрессором / адиабатическое сжатие [CO2]
         enthalpy_isoentr_compr = PropsSI('H','S',self.p.entr[5],'P',self.p.pres[6],'CO2')
         dh_isoentr_compr =  enthalpy_isoentr_compr - self.p.enth[5]
         
-        self.p.enth.iloc[6] = self.p.enth[5] + dh_isoentr_compr / self.p.efc[6]
-        self.p.temp.iloc[6] = PropsSI('T','H',self.p.enth[6],'P',self.p.pres[6],'CO2') 
-        self.p.entr.iloc[6] = PropsSI('S','T',self.p.temp[6],'P',self.p.pres[6],'CO2')
-        self.p.dens.iloc[6] = PropsSI('D','T',self.p.temp[6],'P',self.p.pres[6],'CO2')
-        self.p.sp_heat.iloc[6] = PropsSI('C','T',self.p.temp[6],'P',self.p.pres[6],'CO2')
-        self.p.dh.iloc[6] = self.p.enth[6] - self.p.enth[5]  # перепад энтальпий в компрессоре при изоэнтропическом сжатии
-        self.p.dt.iloc[6] = self.p.temp[6] - self.p.temp[5]
-        self.p.dp_rel.iloc[6] = self.p.pres[5] / self.p.pres[6]
-        self.p.phase.iloc[6] = PropsSI('Phase','T',self.p.temp[6],'P',self.p.pres[6],'CO2')
+        self.p.loc[6, 'enth'] = self.p.enth[5] + dh_isoentr_compr / self.p.efc[6]
+        self.p.loc[6, 'temp'] = PropsSI('T','H',self.p.enth[6],'P',self.p.pres[6],'CO2')
+        self.p.loc[6, 'entr'] = PropsSI('S','T',self.p.temp[6],'P',self.p.pres[6],'CO2')
+        self.p.loc[6, 'dens'] = PropsSI('D','T',self.p.temp[6],'P',self.p.pres[6],'CO2')
+        self.p.loc[6, 'sp_heat'] = PropsSI('C','T',self.p.temp[6],'P',self.p.pres[6],'CO2')
+        self.p.loc[6, 'dh'] = self.p.enth[6] - self.p.enth[5]  # перепад энтальпий в компрессоре при изоэнтропическом сжатии
+        self.p.loc[6, 'dt'] = self.p.temp[6] - self.p.temp[5]
+        self.p.loc[6, 'dp_rel'] = self.p.pres[5] / self.p.pres[6]
+        self.p.loc[6, 'phase'] = PropsSI('Phase','T',self.p.temp[6],'P',self.p.pres[6],'CO2')
         
-        ######################################
-        # print(self.p)
-        # print(self.g)
+        self.p.loc[0, 'enth'] = PropsSI('H','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
+        self.p.loc[0, 'entr'] = PropsSI('S','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
+        self.p.loc[0, 'dens'] = PropsSI('D','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
+        self.p.loc[0, 'sp_heat'] = PropsSI('C','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
         
-        
-        # print("*** program OK ***")
-        # sys.exit("*** STOP ***")
-        ######################################
-        
-        # точка 0 - перед турбиной [CO2,H2O]
-        # print(self.p.temp[0])
-        # print(self.p.pres[0])
-        
-        
-        self.p.enth.iloc[0] = PropsSI('H','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix) 
-        self.p.entr.iloc[0] = PropsSI('S','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
-        self.p.dens.iloc[0] = PropsSI('D','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
-        self.p.sp_heat.iloc[0] = PropsSI('C','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
-        
-        self.p.dt.iloc[0] = self.p.temp[0] - self.p.temp[2]
-        self.p.dh.iloc[0] = self.p.enth[0] - self.p.enth[2]  
-        self.p.phase.iloc[0] = PropsSI('Phase','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
+        self.p.loc[0, 'dt'] = self.p.temp[0] - self.p.temp[2]
+        self.p.loc[0, 'dh'] = self.p.enth[0] - self.p.enth[2]
+        self.p.loc[0, 'phase'] = PropsSI('Phase','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
         
         
         # точка 1 - за турбиной / адиабатическое расширение [CO2,H2O]
         temp_isoentr_expand = self._tempS(self.p.pres[1], self.p.entr[0])
         enthalpy_isoentr_expand = PropsSI('H','T|supercritical',temp_isoentr_expand,'P',self.p.pres[1],self.fluid_mix)
         dh_isoentr_expand =  enthalpy_isoentr_expand - self.p.enth[0]
-        self.p.enth.iloc[1] = self.p.enth[0] + dh_isoentr_expand * self.p.efc[1]
-        self.p.temp.iloc[1] = self._tempH(self.p.pres[1], self.p.enth[1])
+        self.p.loc[1, 'enth'] = self.p.enth[0] + dh_isoentr_expand * self.p.efc[1]
+        self.p.loc[1, 'temp'] = self._tempH(self.p.pres[1], self.p.enth[1])
         
-        self.p.entr.iloc[1] = PropsSI('S','T|supercritical',self.p.temp[1],'P',self.p.pres[1],self.fluid_mix)
-        self.p.dens.iloc[1] = PropsSI('D','T|supercritical',self.p.temp[1],'P',self.p.pres[1],self.fluid_mix)
-        self.p.sp_heat.iloc[1] = PropsSI('C','T|supercritical',self.p.temp[1],'P',self.p.pres[1],self.fluid_mix)
+        self.p.loc[1, 'entr'] = PropsSI('S','T|supercritical',self.p.temp[1],'P',self.p.pres[1],self.fluid_mix)
+        self.p.loc[1, 'dens'] = PropsSI('D','T|supercritical',self.p.temp[1],'P',self.p.pres[1],self.fluid_mix)
+        self.p.loc[1, 'sp_heat'] = PropsSI('C','T|supercritical',self.p.temp[1],'P',self.p.pres[1],self.fluid_mix)
         
-        self.p.dt.iloc[1] = self.p.temp[1] - self.p.temp[0]
-        self.p.dh.iloc[1] = self.p.enth[1] - self.p.enth[0]  
-        self.p.dp_rel.iloc[1] = self.p.pres[0] / self.p.pres[1]
-        self.p.phase.iloc[1] = PropsSI('Phase','T|supercritical',self.p.temp[1],'P',self.p.pres[1],self.fluid_mix)
+        self.p.loc[1, 'dt'] = self.p.temp[1] - self.p.temp[0]
+        self.p.loc[1, 'dh'] = self.p.enth[1] - self.p.enth[0]
+        self.p.loc[1, 'dp_rel'] = self.p.pres[0] / self.p.pres[1]
+        self.p.loc[1, 'phase'] = PropsSI('Phase','T|supercritical',self.p.temp[1],'P',self.p.pres[1],self.fluid_mix)
         
         
         ###################################################
         
         # точка 7 - за рекуператором / холодная часть - нагрев [CO2]
-        self.p.enth.iloc[7] = PropsSI('H','T',self.p.temp[7],'P',self.p.pres[7],'CO2') 
-        self.p.entr.iloc[7] = PropsSI('S','T',self.p.temp[7],'P',self.p.pres[7],'CO2')
-        self.p.dens.iloc[7] = PropsSI('D','T',self.p.temp[7],'P',self.p.pres[7],'CO2')
-        self.p.sp_heat.iloc[7] = PropsSI('C','T',self.p.temp[7],'P',self.p.pres[7],'CO2')
+        self.p.loc[7, 'enth'] = PropsSI('H','T',self.p.temp[7],'P',self.p.pres[7],'CO2')
+        self.p.loc[7, 'entr'] = PropsSI('S','T',self.p.temp[7],'P',self.p.pres[7],'CO2')
+        self.p.loc[7, 'dens'] = PropsSI('D','T',self.p.temp[7],'P',self.p.pres[7],'CO2')
+        self.p.loc[7, 'sp_heat'] = PropsSI('C','T',self.p.temp[7],'P',self.p.pres[7],'CO2')
         
-        self.p.dh.iloc[7] = self.p.enth[7] - self.p.enth[6]  
-        self.p.dt.iloc[7] = self.p.temp[7] - self.p.temp[6]
-        self.p.phase.iloc[7] = PropsSI('Phase','T',self.p.temp[7],'P',self.p.pres[7],'CO2')
+        self.p.loc[7, 'dh'] = self.p.enth[7] - self.p.enth[6]
+        self.p.loc[7, 'dt'] = self.p.temp[7] - self.p.temp[6]
+        self.p.loc[7, 'phase'] = PropsSI('Phase','T',self.p.temp[7],'P',self.p.pres[7],'CO2')
         
         
         # точка 2 - за рекуператором / горячая часть - охлаждение [CO2,H2O]
         
-        self.p.dh.iloc[2] = - self.comb.gas.mass['CO2_recyc'] * self.p.dh[7]
-        self.p.enth.iloc[2] = self.p.enth[1] + self.p.dh[2]
-        self.p.temp.iloc[2] = self._tempH(pressure=self.p.pres[2], enthalpy=self.p.enth[2])
+        self.p.loc[2, 'dh'] = - self.comb.gas.mass['CO2_recyc'] * self.p.dh[7]
+        self.p.loc[2, 'enth'] = self.p.enth[1] + self.p.dh[2]
+        self.p.loc[2, 'temp'] = self._tempH(pressure=self.p.pres[2], enthalpy=self.p.enth[2])
         
-        self.p.entr.iloc[2] = PropsSI('S','T|supercritical',self.p.temp[2],'P',self.p.pres[2],self.fluid_mix)
-        self.p.dens.iloc[2] = PropsSI('D','T|supercritical',self.p.temp[2],'P',self.p.pres[2],self.fluid_mix)
-        self.p.sp_heat.iloc[2] = PropsSI('C','T|supercritical',self.p.temp[2],'P',self.p.pres[2],self.fluid_mix)
+        self.p.loc[2, 'entr'] = PropsSI('S','T|supercritical',self.p.temp[2],'P',self.p.pres[2],self.fluid_mix)
+        self.p.loc[2, 'dens'] = PropsSI('D','T|supercritical',self.p.temp[2],'P',self.p.pres[2],self.fluid_mix)
+        self.p.loc[2, 'sp_heat'] = PropsSI('C','T|supercritical',self.p.temp[2],'P',self.p.pres[2],self.fluid_mix)
         
-        self.p.dp_rel.iloc[2] = self.p.pres[1] / self.p.pres[2]
-        self.p.dt.iloc[2] = self.p.temp[2] - self.p.temp[1]
-        self.p.phase.iloc[2] = PropsSI('Phase','T|supercritical',self.p.temp[2],'P',self.p.pres[2],self.fluid_mix)
+        self.p.loc[2, 'dp_rel'] = self.p.pres[1] / self.p.pres[2]
+        self.p.loc[2, 'dt'] = self.p.temp[2] - self.p.temp[1]
+        self.p.loc[2, 'phase'] = PropsSI('Phase','T|supercritical',self.p.temp[2],'P',self.p.pres[2],self.fluid_mix)
         
         
         ######################################################
         
         # точки 3, 4 - за сепаратором / осушение [CO2]
         
-        self.p.temp.iloc[3:5] = self.p.temp[2]
-        self.p.enth.iloc[3:5] = PropsSI('H','T',self.p.temp[3],'P',self.p.pres[3],'CO2') 
-        self.p.entr.iloc[3:5] = PropsSI('S','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        self.p.dens.iloc[3:5] = PropsSI('D','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        self.p.sp_heat.iloc[3:5] = PropsSI('C','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[3:5, 'temp'] = self.p.temp[2]
+        self.p.loc[3:5, 'enth'] = PropsSI('H','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[3:5, 'entr'] = PropsSI('S','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[3:5, 'dens'] = PropsSI('D','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[3:5, 'sp_heat'] = PropsSI('C','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
         
-        self.p.dt.iloc[3] = self.p.temp[3] - self.p.temp[2]
-        self.p.dh.iloc[3] = self.p.enth[3] - self.p.enth[2] 
+        self.p.loc[3, 'dt'] = self.p.temp[3] - self.p.temp[2]
+        self.p.loc[3, 'dh'] = self.p.enth[3] - self.p.enth[2]
         
-        self.p.dt.iloc[4] = self.p.temp[4] - self.p.temp[3]
-        self.p.dt.iloc[5] = self.p.temp[5] - self.p.temp[4]
-        self.p.dh.iloc[4] = self.p.enth[4] - self.p.enth[3]  
-        self.p.phase.iloc[3:5] = PropsSI('Phase','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[4, 'dt'] = self.p.temp[4] - self.p.temp[3]
+        self.p.loc[5, 'dt'] = self.p.temp[5] - self.p.temp[4]
+        self.p.loc[4, 'dh'] = self.p.enth[4] - self.p.enth[3]
+        self.p.loc[3:5, 'phase'] = PropsSI('Phase','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
         
         
         # точка 0 - за охладителем / охлаждение [CO2,H2O]
-        self.p.dh.iloc[5] = self.p.enth[5] - self.p.enth[4]  
-        self.p.dh.iloc[0] = self.p.enth[0] - self.p.enth[7] # перепад энтальпий в охладителе
+        self.p.loc[5, 'dh'] = self.p.enth[5] - self.p.enth[4]
+        self.p.loc[0, 'dh'] = self.p.enth[0] - self.p.enth[7] # перепад энтальпий в охладителе
         
-        self.p.dt.iloc[0] = self.p.temp[0] - self.p.temp[7]
-        self.p.phase.iloc[0] = PropsSI('Phase','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
+        self.p.loc[0, 'dt'] = self.p.temp[0] - self.p.temp[7]
+        self.p.loc[0, 'phase'] = PropsSI('Phase','T|supercritical',self.p.temp[0],'P',self.p.pres[0],self.fluid_mix)
         
         # пинч-поинт
         self.g.at['pinch'] = self.p.temp[1] - self.p.temp[7]
@@ -217,8 +203,10 @@ class Acycle:
         
         # эффективность    
         self.g.at['efc_cycle'] = self.g.work_cycle / self.p.dh[0]
-        
-        
+
+        self.p.to_csv('cycle.csv', index=False)
+        self.g.to_csv('cycle_g.csv', index=False)
+
     def efc_temp_recyc(self, var_temp_recyc, pressure_min, pressure_rate, temperature, pinch_point=5):
         plt.figure(figsize=(5, 4))
         # var_temp - кортеж значений диапазона изменения параметра

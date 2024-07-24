@@ -199,15 +199,22 @@ comb.tempAlphaPl(k_recyc=(5, 25), temp_recyc=580)
 
 ## Calculation of cycle parameters
 
-### Calculation
+### Calculation of cycle parameters at points
 
 ```python
 from allam import Acycle
 sco = Acycle()
 sco.cycle(pressure_min=8e6, pressure_rate=2.2, temperature=(310,1073,900))
 print(sco.p)
+```
+
+### Cycle efficiency
+
+```python
 print(sco.g)
 ```
+
+
 
 
 ### Фазовая диаграмма рабочего тела
