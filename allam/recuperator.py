@@ -19,13 +19,13 @@ class HeatEx:
         self.r = pd.DataFrame(columns=['x0_cycle','x1_cycle','x0','x1','x0res','x1res'], 
                               index=['hot','cold','dt'])
         
-        self.r.loc[0, 'x0_cycle'] = self.p.temp[1]
-        self.r.loc[1, 'x0_cycle'] = self.p.temp[7]
-        self.r.loc[2, 'x0_cycle'] = self.p.temp[1] - self.p.temp[7]
+        self.r.loc['hot', 'x0_cycle'] = self.p.temp[1]
+        self.r.loc['cold', 'x0_cycle'] = self.p.temp[7]
+        self.r.loc['dt', 'x0_cycle'] = self.p.temp[1] - self.p.temp[7]
         
-        self.r.loc[0, 'x1_cycle'] = self.p.temp[2]
-        self.r.loc[1, 'x1_cycle'] = self.p.temp[6]
-        self.r.loc[2, 'x1_cycle'] = self.p.temp[2] - self.p.temp[6]
+        self.r.loc['hot', 'x1_cycle'] = self.p.temp[2]
+        self.r.loc['cold', 'x1_cycle'] = self.p.temp[6]
+        self.r.loc['dt', 'x1_cycle'] = self.p.temp[2] - self.p.temp[6]
     
     def solve(self):
         n = 100
@@ -43,13 +43,13 @@ class HeatEx:
         for i in range(n-1):
             tc[i+1] = tc[i] + dh_cold / PropsSI('C','T|supercritical',tc[i],'P',self.p.pres[6],'CO2')
         
-        self.r.loc[0, 'x0'] = th[0]
-        self.r.loc[1, 'x0'] = tc[-1]
-        self.r.loc[2, 'x0'] = th[0] - tc[-1]
+        self.r.loc['hot', 'x0'] = th[0]
+        self.r.loc['cold', 'x0'] = tc[-1]
+        self.r.loc['dt', 'x0'] = th[0] - tc[-1]
         
-        self.r.loc[0, 'x1'] = th[-1]
-        self.r.loc[1, 'x1'] = tc[0]
-        self.r.loc[2, 'x1'] = th[-1] - tc[0]
+        self.r.loc['hot', 'x1'] = th[-1]
+        self.r.loc['cold', 'x1'] = tc[0]
+        self.r.loc['dt', 'x1'] = th[-1] - tc[0]
         
         self.r.x0res =  self.r.x0_cycle - self.r.x0
         self.r.x1res =  self.r.x1_cycle - self.r.x1

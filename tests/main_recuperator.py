@@ -1,7 +1,9 @@
 from allam import HeatEx
 rec = HeatEx()
-rec.density()
+# rec.density()
 
-rec.spheat()
+# rec.spheat()
 
 rec.solve()
+
+print(rec.r)
