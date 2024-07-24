@@ -235,15 +235,34 @@ sco.efc_temp_heat((700,1000), pressure_min=8e6, pressure_rate=2.2, temperature=(
 
 ![efc_temp_recyc](images/efc_temp_recyc.jpg)
 
+## Recuperator
+
+### Changing the density of the working fluid in the recuperator
+
+```python
+from allam import HeatEx
+rec = HeatEx()
+rec.density()
+```
+![density_recup](images/density_recup.jpg)
+
+### Change in heat capacity of the working fluid in the recuperator
+
+```python
+rec.spheat()
+```
 
 
-### Изменение плотности в цикле
+![CpT_recup](images/CpT_recup.jpg)
 
-### TS-диаграмма
 
-### PH-диаграмма
+### Changing the temperature of the working fluid in the recuperator
 
-### Зависимость КПД от температуры рециркулируемого газа
+![TX_recup](images/TX_recup.jpg)
+
+```python
+rec.solve()
+```
 
 
 ### Зависимость pinch от температуры рециркулируемого газа

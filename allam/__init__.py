@@ -11,5 +11,5 @@ from .spHvol import *
 from .property_sCO2_cp import *
 from .allam import *
 from .phasediagrCO2mix import *
-# from .recuperator import *
+from .recuperator import *
 
