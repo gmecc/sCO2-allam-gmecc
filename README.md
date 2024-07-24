@@ -214,10 +214,11 @@ print(sco.p)
 print(sco.g)
 ```
 
+### Phase diagram of the working fluid
 
 
 
-### Фазовая диаграмма рабочего тела
+
 
 ### Изменение плотности в цикле
 

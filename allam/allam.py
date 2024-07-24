@@ -86,11 +86,11 @@ class Acycle:
         
         self.fluid_mix = 'CO2[' + str(molCO2) + ']&water[' + str(molH2O) + ']'
         
-        self.p.loc[0:3, 'CO2'] = molCO2
-        self.p.loc[0:3, 'H2O'] = 1 - molCO2
+        self.p.loc[0:2, 'CO2'] = molCO2
+        self.p.loc[0:2, 'H2O'] = 1 - molCO2
         
-        self.p.loc[3:8, 'CO2'] = 1
-        self.p.loc[3:8, 'H2O'] = 0
+        self.p.loc[3:7, 'CO2'] = 1
+        self.p.loc[3:7, 'H2O'] = 0
         
         
         # точка 5 - перед компрессором [CO2]
@@ -173,11 +173,11 @@ class Acycle:
         
         # точки 3, 4 - за сепаратором / осушение [CO2]
         
-        self.p.loc[3:5, 'temp'] = self.p.temp[2]
-        self.p.loc[3:5, 'enth'] = PropsSI('H','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        self.p.loc[3:5, 'entr'] = PropsSI('S','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        self.p.loc[3:5, 'dens'] = PropsSI('D','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        self.p.loc[3:5, 'sp_heat'] = PropsSI('C','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[3:4, 'temp'] = self.p.temp[2]
+        self.p.loc[3:4, 'enth'] = PropsSI('H','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[3:4, 'entr'] = PropsSI('S','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[3:4, 'dens'] = PropsSI('D','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[3:4, 'sp_heat'] = PropsSI('C','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
         
         self.p.loc[3, 'dt'] = self.p.temp[3] - self.p.temp[2]
         self.p.loc[3, 'dh'] = self.p.enth[3] - self.p.enth[2]
@@ -185,7 +185,7 @@ class Acycle:
         self.p.loc[4, 'dt'] = self.p.temp[4] - self.p.temp[3]
         self.p.loc[5, 'dt'] = self.p.temp[5] - self.p.temp[4]
         self.p.loc[4, 'dh'] = self.p.enth[4] - self.p.enth[3]
-        self.p.loc[3:5, 'phase'] = PropsSI('Phase','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
+        self.p.loc[3:4, 'phase'] = PropsSI('Phase','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
         
         
         # точка 0 - за охладителем / охлаждение [CO2,H2O]
