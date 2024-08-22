@@ -27,10 +27,10 @@ pd.set_option('display.float_format', '{:.2f}'.format)
 class Acycle:
     def __init__(self):
         self.p = pd.DataFrame(columns=['CO2', 'H2O', 'temp', 'dt', 'pres', 'dp_rel',
-                'dens', 'entr', 'enth', 'dh', 'sp_heat', 'efc', 'phase'], index=range(8))
-        self.p.loc[:, 'dp_rel'] = [.98, np.nan, .95, .99, 1., .95, np.nan, .95] # относительные потери давления
-        self.p.loc[:, 'efc'] = (.99,  .9, .85, 1., 1., 1., .86, .85) # КПД
-        self.p.loc[:, 'dt'] = (.0, .0, 5., .0, .0, .0, .0, 5.) # температурный напор [град]
+                                       'dens', 'entr', 'enth', 'dh', 'sp_heat', 'efc', 'phase', 'mfr'], index=range(8))
+        self.p.loc[:, 'dp_rel'] = [.98, np.nan, .95, .99, 1., .95, np.nan, .95]  # относительные потери давления
+        self.p.loc[:, 'efc'] = (.99, .9, .85, 1., 1., 1., .86, .85)  # КПД
+        self.p.loc[:, 'dt'] = (.0, .0, 5., .0, .0, .0, .0, 5.)  # температурный напор [град]
         self.g = pd.Series([np.nan], index=['k_recyc'])
 
 
@@ -54,7 +54,7 @@ class Acycle:
         return sol.x[0]
 
         # РАСЧЕТ ПАРАМЕТРОВ РТ В ТОЧКАХ ЦИКЛА
-    def cycle(self, pressure_min, pressure_rate, temperature, pinch_point=5):
+    def cycle(self, pressure_min: object, pressure_rate: object, temperature: object, power: object, pinch_point: object = 5) -> object:
         
         self.pressure_min = pressure_min # давление перед компрессором
         self.pressure_rate = pressure_rate # повышение давления в компрессоре
@@ -170,24 +170,43 @@ class Acycle:
         
         
         ######################################################
-        
-        # точки 3, 4 - за сепаратором / осушение [CO2]
-        
-        self.p.loc[3:4, 'temp'] = self.p.temp[2]
-        self.p.loc[3:4, 'enth'] = PropsSI('H','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        self.p.loc[3:4, 'entr'] = PropsSI('S','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        self.p.loc[3:4, 'dens'] = PropsSI('D','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        self.p.loc[3:4, 'sp_heat'] = PropsSI('C','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        
+
+        # точки 3 - за сепаратором / осушение [CO2]
+
+        self.p.loc[3, 'temp'] = self.p.temp[2]
+        self.p.loc[3, 'enth'] = PropsSI('H', 'T', self.p.temp[3], 'P', self.p.pres[3], 'CO2')
+        self.p.loc[3, 'entr'] = PropsSI('S', 'T', self.p.temp[3], 'P', self.p.pres[3], 'CO2')
+        self.p.loc[3, 'dens'] = PropsSI('D', 'T', self.p.temp[3], 'P', self.p.pres[3], 'CO2')
+        self.p.loc[3, 'sp_heat'] = PropsSI('C', 'T', self.p.temp[3], 'P', self.p.pres[3], 'CO2')
         self.p.loc[3, 'dt'] = self.p.temp[3] - self.p.temp[2]
         self.p.loc[3, 'dh'] = self.p.enth[3] - self.p.enth[2]
-        
+        self.p.loc[3, 'phase'] = PropsSI('Phase', 'T', self.p.temp[3], 'P', self.p.pres[3], 'CO2')
+
+        # точка 4 - за сепаратором после отвода избытка СО2 [CO2]
+        self.p.loc[4, 'temp'] = self.p.temp[3]
+        self.p.loc[4, 'enth'] = PropsSI('H', 'T', self.p.temp[4], 'P', self.p.pres[4], 'CO2')
+        self.p.loc[4, 'entr'] = PropsSI('S', 'T', self.p.temp[4], 'P', self.p.pres[4], 'CO2')
+        self.p.loc[4, 'dens'] = PropsSI('D', 'T', self.p.temp[4], 'P', self.p.pres[4], 'CO2')
+        self.p.loc[4, 'sp_heat'] = PropsSI('C', 'T', self.p.temp[4], 'P', self.p.pres[4], 'CO2')
+
         self.p.loc[4, 'dt'] = self.p.temp[4] - self.p.temp[3]
         self.p.loc[5, 'dt'] = self.p.temp[5] - self.p.temp[4]
         self.p.loc[4, 'dh'] = self.p.enth[4] - self.p.enth[3]
-        self.p.loc[3:4, 'phase'] = PropsSI('Phase','T',self.p.temp[3],'P',self.p.pres[3],'CO2')
-        
-        
+        self.p.loc[4, 'phase'] = PropsSI('Phase', 'T', self.p.temp[4], 'P', self.p.pres[4], 'CO2')
+
+        #  расход
+
+        self.power = power * 1000.
+
+        self.p.loc[0, 'mfr'] = self.power / abs(self.p.dh[5] + self.p.dh[2])
+        self.p.loc[1, 'mfr'] = self.p.mfr[0]
+        self.p.loc[2, 'mfr'] = self.p.mfr[1]
+        self.p.loc[3, 'mfr'] = self.p.mfr[2] * self.comb.gas.mol['CO2']
+        self.p.loc[4, 'mfr'] = self.p.mfr[3] * self.comb.gas.mol['CO2_recyc']
+        self.p.loc[5, 'mfr'] = self.p.mfr[4]
+        self.p.loc[6, 'mfr'] = self.p.mfr[5]
+        self.p.loc[7, 'mfr'] = self.p.mfr[6]
+
         # точка 0 - за охладителем / охлаждение [CO2,H2O]
         self.p.loc[5, 'dh'] = self.p.enth[5] - self.p.enth[4]
         self.p.loc[0, 'dh'] = self.p.enth[0] - self.p.enth[7] # перепад энтальпий в охладителе
@@ -216,8 +235,9 @@ class Acycle:
         
         for i in range(50):
             self.cycle(pressure_min, pressure_rate, 
-                       temperature=(temperature[0], temperature[1], temp[i]), 
+                       temperature=(temperature[0], temperature[1], temp[i]),
                        pinch_point=5)
+                                        
             efc[i] = self.g.efc_cycle
         
         pol = np.polynomial.Polynomial.fit(temp, efc, deg=3)
@@ -230,7 +250,7 @@ class Acycle:
         plt.show()
         
         
-    def efc_pinch(self, var_temp_recyc, pressure_min, pressure_rate, temperature, pinch_point=5):
+    def efc_pinch(self, var_temp_recyc, pressure_min, pressure_rate, temperature,power, pinch_point=5):
         plt.figure(figsize=(5, 4))
         # var_temp - кортеж значений диапазона изменения параметра
         
@@ -331,48 +351,163 @@ class Acycle:
         
     
     def ts_diagramm(self):
-        # линия насыщения
-        temp = np.linspace(-31, self.fluid.critical_temperature)
-        entropy_dew = np.vectorize(lambda x: self.fluid.dew_point_at_temperature(x).entropy)
-        entropy_bubble = np.vectorize(lambda x: self.fluid.bubble_point_at_temperature(x).entropy)
-        
-        plt.plot(entropy_dew(temp), temp, 'grey')
-        plt.plot(entropy_bubble(temp), temp, 'grey')
-        
-        entrop = np.vectorize(lambda p, t: self.fluid.with_state(Input.pressure(p), 
-                                Input.temperature(t)).entropy)
-           
-        p = np.linspace(self.p.pres[2], self.p.pres[4])
-        t = np.linspace(self.p.temp[2], self.p.temp[4])
-        plt.plot(entrop(p,t), t, 'r')
-        
-        p = np.linspace(self.p.pres[5], self.p.pres[0])
-        t = np.linspace(self.p.temp[5], self.p.temp[0])
-        plt.plot(entrop(p,t), t, 'b')
-        
-        p = np.linspace(self.p.pres[4], self.p.pres[5])
-        t = np.linspace(self.p.temp[4], self.p.temp[5])
-        plt.plot(entrop(p,t), t, 'b')
-        
-        p = np.linspace(self.p.pres[0], self.p.pres[2])
-        t = np.linspace(self.p.temp[0], self.p.temp[2])
-        plt.plot(entrop(p,t), t, 'b')
-        
-        entr = np.delete(self.p.entr, (1,5))
-        t = np.delete(self.p.temp, (1,5))
-        plt.scatter(entr, t, color='b') # точка
-        
+        entrop = np.vectorize(lambda p, t: PropsSI('S', 'T', t, 'P', p, 'CO2'))
+        entrop_mix = np.vectorize(lambda p, t: PropsSI('S', 'T|supercritical', t, 'P', p, self.fluid_mix))
+
+        t = np.linspace(self.p.loc[0, "temp"], self.p.loc[1, "temp"])
+        e = np.linspace(self.p.loc[0, "entr"], self.p.loc[1, "entr"])
+        plt.plot(e, t, 'r', label='0-1 - адиабатное расширение в турбине')
+
+        p = np.linspace(self.p.loc[1, "pres"], self.p.loc[2, "pres"])
+        t = np.linspace(self.p.loc[1, "temp"], self.p.loc[2, "temp"])
+        plt.plot(entrop_mix(p, t), t, 'r', label='1-2 - охлаждение в рекуператоре')
+
+        t = np.linspace(self.p.loc[2, "temp"], self.p.loc[3, "temp"])
+        # p = np.linspace(self.p.loc[2, "pres"], self.p.loc[3, "pres"])
+        # plt.plot(entrop_mix(p,t), t, 'r', label='2-3 - осушение в сепараторе')
+        e = np.linspace(self.p.loc[2, "entr"], self.p.loc[3, "entr"])
+        plt.plot(e, t, 'r', label='2-3 - осушение в сепараторе')
+
+        t = np.linspace(self.p.loc[3, "temp"], self.p.loc[4, "temp"])
+        e = np.linspace(self.p.loc[3, "entr"], self.p.loc[4, "entr"])
+        plt.plot(e, t, 'b', label='3-4 - отвод диоксида углерода')
+
+        t = np.linspace(self.p.loc[4, "temp"], self.p.loc[5, "temp"])
+        e = np.linspace(self.p.loc[4, "entr"], self.p.loc[5, "entr"])
+        plt.plot(e, t, 'b', label='4-5 - нагревание в теплообменнике')
+
+        t = np.linspace(self.p.loc[5, "temp"], self.p.loc[6, "temp"])
+        e = np.linspace(self.p.loc[5, "entr"], self.p.loc[6, "entr"])
+        plt.plot(e, t, 'b', label='5-6 - сжатие в компрессоре')
+
+        p = np.linspace(self.p.loc[6, "pres"], self.p.loc[7, "pres"])
+        t = np.linspace(self.p.loc[6, "temp"], self.p.loc[7, "temp"])
+        plt.plot(entrop(p, t), t, 'b', label='6-7 - нагревание в рекуператоре')
+
+        t = np.linspace(self.p.loc[7, "temp"], self.p.loc[0, "temp"])
+        e = np.linspace(self.p.loc[7, "entr"], self.p.loc[0, "entr"])
+        plt.plot(e, t, 'b', label='7-0 - нагрев в камере сгорания')
+
+        entr = np.delete(self.p.entr, (1, 7))
+        t = np.delete(self.p.temp, (1, 7))
+        plt.scatter(entr, t, color='b')  # точка
+
+        plt.text(entrop(self.p.loc[0, "pres"], self.p.loc[0, "temp"]), self.p.loc[0, "temp"], "0")
+        plt.text(entrop(self.p.loc[1, "pres"], self.p.loc[1, "temp"]), self.p.loc[1, "temp"], "1")
+        plt.text(entrop(self.p.loc[2, "pres"], self.p.loc[2, "temp"]) + 60, self.p.loc[2, "temp"] - 30, "2")
+        plt.text(entrop(self.p.loc[3, "pres"], self.p.loc[3, "temp"]), self.p.loc[3, "temp"] - 30, "3")
+        plt.text(entrop(self.p.loc[4, "pres"], self.p.loc[4, "temp"]), self.p.loc[4, "temp"] + 20, "4")
+        plt.text(entrop(self.p.loc[5, "pres"], self.p.loc[5, "temp"]) - 50, self.p.loc[5, "temp"] + 50, "5")
+        plt.text(entrop(self.p.loc[6, "pres"], self.p.loc[6, "temp"]) - 50, self.p.loc[6, "temp"] - 70, "6")
+        plt.text(entrop(self.p.loc[7, "pres"], self.p.loc[7, "temp"]), self.p.loc[7, "temp"], "7")
+
         plt.minorticks_on()
-        plt.ylabel('$T^\circ C$', fontsize=10) 
-        plt.xlabel('$S,Дж/кг$', fontsize=10)    
-        plt.grid(linestyle='--', linewidth=0.5, color='black') # сетка
-        # plt.legend()
-        plt.tight_layout() # оптимизируем поля и расположение объектов
+        plt.ylabel('$T^\circ C$', fontsize=10)
+        plt.xlabel('$S, Дж/кг$', fontsize=10)
+        plt.grid(linestyle='--', linewidth=0.5, color='black')  # сетка
+        plt.legend()
+        plt.tight_layout()  # оптимизируем поля и расположение объектов
         file_name = 'ts-diagramm.png'
-        plt.savefig(file_name, dpi = 300)
+        plt.savefig(file_name, dpi=300)
         plt.show()
         print(file_name)
 
+    def ph_diagram(self):
+
+        p = np.linspace(self.p.loc[0, "pres"], self.p.loc[1, "pres"])
+        h = np.linspace(self.p.loc[0, "enth"], self.p.loc[1, "enth"])
+        plt.plot(h, p, 'r', label='0-1 - адиабатное расширение в турбине')
+
+        p = np.linspace(self.p.loc[1, "pres"], self.p.loc[2, "pres"])
+        h = np.linspace(self.p.loc[1, "enth"], self.p.loc[2, "enth"])
+        plt.plot(h, p, 'r', label='1-2 - охлаждение в рекуператоре')
+
+        p = np.linspace(self.p.loc[2, "pres"], self.p.loc[3, "pres"])
+        h = np.linspace(self.p.loc[2, "enth"], self.p.loc[3, "enth"])
+        plt.plot(h, p, 'b', label='2-3 - осушение в сепараторе')
+
+        p = np.linspace(self.p.loc[3, "pres"], self.p.loc[4, "pres"])
+        h = np.linspace(self.p.loc[3, "enth"], self.p.loc[4, "enth"])
+        plt.plot(h, p, 'b', label='3-4 - отвод диоксида углерода')
+
+        p = np.linspace(self.p.loc[4, "pres"], self.p.loc[5, "pres"])
+        h = np.linspace(self.p.loc[4, "enth"], self.p.loc[5, "enth"])
+        plt.plot(h, p, 'b', label='4-5 - нагревание в теплообменнике')
+
+        p = np.linspace(self.p.loc[5, "pres"], self.p.loc[6, "pres"])
+        h = np.linspace(self.p.loc[5, "enth"], self.p.loc[6, "enth"])
+        plt.plot(h, p, 'b', label='5-6 - адиабатное сжатие в компрессоре')
+
+        p = np.linspace(self.p.loc[6, "pres"], self.p.loc[7, "pres"])
+        h = np.linspace(self.p.loc[6, "enth"], self.p.loc[7, "enth"])
+        plt.plot(h, p, 'b', label='6-7 - нагревание в рекуператоре')
+
+        p = np.linspace(self.p.loc[7, "pres"], self.p.loc[0, "pres"])
+        h = np.linspace(self.p.loc[7, "enth"], self.p.loc[0, "enth"])
+        plt.plot(h, p, 'b', label='7-0 - нагрев в камере сгорания')
+
+        entalp = np.delete(self.p.enth, (1, 7))
+        p = np.delete(self.p.pres, (1, 7))
+        plt.scatter(entalp, p, color='b')  # точка
+
+        plt.minorticks_on()
+        plt.ylabel('$P, Па$', fontsize=10)
+        plt.xlabel('$H, Дж/моль$', fontsize=10)
+        plt.grid(linestyle='--', linewidth=0.5, color='black')  # сетка
+        plt.legend()
+        plt.tight_layout()  # оптимизируем поля и расположение объектов
+        file_name = 'ph-diagramm.png'
+        plt.savefig(file_name, dpi=600)
+        plt.show()
+
+    def hs_diagram(self):
+
+
+        s = np.linspace(self.p.loc[0, "entr"], self.p.loc[1, "entr"])
+        h = np.linspace(self.p.loc[0, "enth"], self.p.loc[1, "enth"])
+        plt.plot(s, h, 'r', label='0-1 - адиабатное расширение в турбине')
+
+        s = np.linspace(self.p.loc[1, "entr"], self.p.loc[2, "entr"])
+        h = np.linspace(self.p.loc[1, "enth"], self.p.loc[2, "enth"])
+        plt.plot(s, h, 'r', label='1-2 - охлаждение в рекуператоре')
+
+        s = np.linspace(self.p.loc[2, "entr"], self.p.loc[3, "entr"])
+        h = np.linspace(self.p.loc[2, "enth"], self.p.loc[3, "enth"])
+        plt.plot(s, h, 'r', label='2-3 - осушение в сепараторе')
+
+        s = np.linspace(self.p.loc[3, "entr"], self.p.loc[4, "entr"])
+        h = np.linspace(self.p.loc[3, "enth"], self.p.loc[4, "enth"])
+        plt.plot(s, h, 'b', label='3-4 - отвод диоксида углерода')
+
+        s = np.linspace(self.p.loc[4, "entr"], self.p.loc[5, "entr"])
+        h = np.linspace(self.p.loc[4, "enth"], self.p.loc[5, "enth"])
+        plt.plot(s, h, 'b', label='4-5 - нагревание в теплообменнике')
+
+        s = np.linspace(self.p.loc[5, "entr"], self.p.loc[6, "entr"])
+        h = np.linspace(self.p.loc[5, "enth"], self.p.loc[6, "enth"])
+        plt.plot(s, h, 'b', label='5-6 - адиабатное сжатие в компрессоре')
+
+        s = np.linspace(self.p.loc[6, "entr"], self.p.loc[7, "entr"])
+        h = np.linspace(self.p.loc[6, "enth"], self.p.loc[7, "enth"])
+        plt.plot(s, h, 'b', label='6-7 - нагревание в рекуператоре')
+
+        s = np.linspace(self.p.loc[7, "entr"], self.p.loc[0, "entr"])
+        h = np.linspace(self.p.loc[7, "enth"], self.p.loc[0, "enth"])
+        plt.plot(s, h, 'b', label='7-0 - нагрев в камере сгорания')
+
+        entalp = np.delete(self.p.enth, (1, 7))
+        entr = np.delete(self.p.entr, (1, 7))
+        plt.scatter(entr, entalp, color='b')  # точка
+
+        plt.minorticks_on()
+        plt.ylabel('$S, Дж/кг$', fontsize=10)
+        plt.xlabel('$H, Дж/моль$', fontsize=10)
+        plt.grid(linestyle='--', linewidth=0.5, color='black')  # сетка
+        # plt.legend()
+        plt.tight_layout()  # оптимизируем поля и расположение объектов
+        file_name = 'hs-diagramm.png'
+        plt.savefig(file_name, dpi=600)
+        plt.show()
 '''        
 # РАСЧЕТ ПАРАМЕТРОВ ЦИКЛА
 temperature[0] # температура перед компрессором [K]
