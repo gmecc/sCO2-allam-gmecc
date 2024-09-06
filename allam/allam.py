@@ -139,8 +139,6 @@ class Acycle:
         self.p.loc[1, 'dh'] = self.p.enth[1] - self.p.enth[0]
         self.p.loc[1, 'dp_rel'] = self.p.pres[0] / self.p.pres[1]
         self.p.loc[1, 'phase'] = PropsSI('Phase','T|supercritical',self.p.temp[1],'P',self.p.pres[1],self.fluid_mix)
-        
-        
         ###################################################
         
         # точка 7 - за рекуператором / холодная часть - нагрев [CO2]
