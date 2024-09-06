@@ -166,7 +166,6 @@ class Acycle:
         self.p.loc[2, 'dt'] = self.p.temp[2] - self.p.temp[1]
         self.p.loc[2, 'phase'] = PropsSI('Phase','T|supercritical',self.p.temp[2],'P',self.p.pres[2],self.fluid_mix)
         
-        
         ######################################################
         
         # точки 3, 4 - за сепаратором / осушение [CO2]
